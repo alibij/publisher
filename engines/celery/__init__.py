@@ -1,0 +1,1 @@
+from .engine import logger_app as celery_logger_engine
