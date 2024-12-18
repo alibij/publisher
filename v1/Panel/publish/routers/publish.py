@@ -16,7 +16,7 @@ router = APIRouter(prefix="/publish")
 
 
 @router.post("/from_script", status_code=status.HTTP_202_ACCEPTED)
-# @limiter.limit('1/minutes')
+@limiter.limit('1/minutes')
 async def publish_from_scrypt(
         request: Request,
         data: PublishPostIn

@@ -1,11 +1,9 @@
 from typing import Union
 
-from bson.errors import InvalidId
 from fastapi import HTTPException, Request, Response, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, ORJSONResponse
 from pydantic import ValidationError
-from pymongo.errors import PyMongoError
 from slowapi.errors import RateLimitExceeded
 from aiohttp.client_exceptions import ClientConnectorError
 
@@ -42,18 +40,6 @@ def custom_rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded)
         response, request.state.view_rate_limit
     )
     return response
-
-
-async def pymongo_error_handler(_: Request, exc: PyMongoError):
-    return await http_error_handler(_,
-                                    ServerError(
-                                        'Database problem occurred.'))
-
-
-async def objectid_error_handler(_: Request, exc: InvalidId):
-    return await http_error_handler(_,
-                                    NotAcceptableError(
-                                        "ObjectID in Not Valid"))
 
 
 async def aiohttp_client_error_handler(_: Request,

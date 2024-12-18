@@ -3,7 +3,6 @@ import random
 import time
 from random import randint
 from uuid import uuid4
-from persiantools.jdatetime import JalaliDateTime
 import pytz
 
 from fastapi.concurrency import run_in_threadpool
@@ -31,10 +30,6 @@ def gen_six_digit_code() -> str:
     random_part = random.randint(100, 999)
     tracking_code = str(timestamp) + str(random_part)
     return tracking_code[-6:]
-
-
-def timestamp2jalali(ts: int) -> JalaliDateTime:
-    return JalaliDateTime.fromtimestamp(int(ts), tehrantimezone())
 
 
 def get_unique_code(num_of_extera_char=8) -> str:
