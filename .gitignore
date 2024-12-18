@@ -3,3 +3,4 @@ venv
 statics
 pytest.ini
 .env
+conf.d
