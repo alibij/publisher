@@ -4,3 +4,6 @@ statics
 pytest.ini
 .env
 conf.d
+build
+dist
+publisher.spec
