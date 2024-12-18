@@ -25,7 +25,7 @@ from error_handler import (custom_rate_limit_exceeded_handler,
                            objectid_error_handler, aiohttp_client_error_handler)
 
 
-docs_url = '/docs' if env_config.SWAGGER else None
+docs_url = '/' if env_config.SWAGGER else None
 redoc_url = '/redoc' if env_config.SWAGGER else None
 
 
