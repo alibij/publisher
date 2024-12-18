@@ -1,15 +1,13 @@
+from typing import AsyncGenerator
 from fastapi import FastAPI, Request
 from fastapi.responses import RedirectResponse
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import ORJSONResponse
 from fastapi.staticfiles import StaticFiles
-from pymongo.errors import PyMongoError
 from slowapi.errors import RateLimitExceeded
 from starlette.exceptions import HTTPException
 from pydantic import ValidationError
-from bson.errors import InvalidId
-from aiohttp.client_exceptions import ClientConnectorError
 
 from v1 import v1_routers
 
@@ -20,9 +18,9 @@ from logger import write_log, Loggers, LogLevels
 from engines.rate_limiter import limiter
 from config import env_config
 from error_handler import (custom_rate_limit_exceeded_handler,
-                           http_error_handler, pymongo_error_handler,
+                           http_error_handler,
                            validation_error_http422_error_handler,
-                           objectid_error_handler, aiohttp_client_error_handler)
+                           aiohttp_client_error_handler)
 
 
 docs_url = '/' if env_config.SWAGGER else None
@@ -31,16 +29,22 @@ redoc_url = '/redoc' if env_config.SWAGGER else None
 
 app = FastAPI(
     default_response_class=ResponseSchema,
-    docs_url=docs_url, redoc_url=redoc_url)
+    docs_url=docs_url, redoc_url=redoc_url,
+    title="Publisher UI",  # Set the title of the Swagger UI
+    version="0.1",
+)
 
 
-@app.on_event("startup")
-async def startup_event():
-    get_routes(app)
-
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+    get_routes(app)  # Call your route setup or initialization logic
     write_log(Loggers.APP_LOGGER, LogLevels.info,
               'fastapi startup', 'Worker started!')
 
+    write_log.info("FastAPI app has started! Worker started!")
+
+    yield
+
+    write_log.info("FastAPI app is shutting down.")
 
 app.add_middleware(
     CORSMiddleware,
@@ -69,8 +73,7 @@ app.state.limiter = limiter
 #     HTTPException, http_error_handler)
 # app.add_exception_handler(
 #     PyMongoError, pymongo_error_handler)
-# app.add_exception_handler(
-#     InvalidId, objectid_error_handler)
+
 # app.add_exception_handler(
 #     ClientConnectorError, aiohttp_client_error_handler)
 
