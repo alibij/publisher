@@ -10,9 +10,13 @@ from config import env_config
 async def get_all_configs(directory: str):
 
     all_files = os.listdir(directory)
-
-    conf_files = [f for f in all_files if f.endswith('.conf')]
+    conf_files = []
     data = {}
+
+    for f in all_files:
+        if f.endswith('.conf') and f != "example.conf":
+            conf_files.append(f)
+
     try:
         for file in conf_files:
             with open(f'{directory}/{file}', 'r') as f:
