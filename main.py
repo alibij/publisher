@@ -78,29 +78,6 @@ app.state.limiter = limiter
 # routes
 app.include_router(v1_routers)
 
-app.mount("/statics/images",
-          StaticFiles(
-              directory=env_config.IMAGE_ADDRESS, check_dir=False),
-          name="statics_images")
-
-
-app.mount("/statics/tmp_images",
-          StaticFiles(
-              directory=env_config.TMP_IMAGE_ADDRESS, check_dir=False),
-          name="statics_tmp_images")
-
-
-# @ app.get("/")
-# async def root():
-#     # return UniqueResponse(f'Welcome to {env_config.PROJ_NAME}')
-#     return RedirectResponse(env_config.BASE_URL)
-
-
-# @ app.get("/ping")
-# @ limiter.limit('1/second')
-# async def ping(request: Request):
-#     return ORJSONResponse(content={'msg': 'pong'})
-
 
 if __name__ == "__main__":
     import uvicorn
