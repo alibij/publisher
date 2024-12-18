@@ -2,6 +2,9 @@ from fastapi import HTTPException, Request
 from fastapi.security import HTTPBearer
 from fastapi.security.utils import get_authorization_scheme_param
 
+from common.exceptions import AuthenticationError
+from config import env_config
+
 from .token import get_token_data
 from .schemas import TokenData
 
@@ -35,3 +38,8 @@ class JWTBearer(HTTPBearer):
                 return None
 
         return await get_token_data(credentials, request)
+
+
+async def check_user_pass(username: str, password: str):
+    if env_config.STATIC_USER_NAME != username or env_config.STATIC_PASSWORD != password:
+        raise AuthenticationError()

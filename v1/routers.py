@@ -44,7 +44,8 @@ panel_routers = [
 
 
 oauth2_scheme = JWTBearer()
-depend_list = [Depends(oauth2_scheme)]
+# depend_list = [Depends(oauth2_scheme)]
+depend_list = [Depends(check_user_pass)]
 
 version_routers = APIRouter(prefix="/v1")
 
