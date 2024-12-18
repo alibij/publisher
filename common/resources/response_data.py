@@ -1,5 +1,6 @@
 UPDATED = "Updated Successfully"
 CREATED = "Created Successfully"
+ACCEPTED = "Accepted Successfully"
 DELETED = "Deleted Successfully"
 OK = "Check Successfully"
 UNAUTHORIZED = "Invalid Authentication Credentials"
