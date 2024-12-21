@@ -43,18 +43,20 @@ async def publish_from_scrypt(
     try:
         if data.backup and 'backup' in conf and len(conf['backup']):
             for c in conf['backup']:
-                for a in conf['args']:
-                    c = c.replace(f"#{a}", arg_obj[a])
+                if 'args' in conf:
+                    for a in conf['args']:
+                        c = c.replace(f"#{a}", arg_obj[a])
                 run_command(create_command(c), conf["work_dir"])
 
         if 'update' in conf and len(conf['update']):
 
             for c in conf['update']:
-                for a in conf['args']:
-                    c = c.replace(f"#{a}", arg_obj[a])
+                if 'args' in conf:
+                    for a in conf['args']:
+                        c = c.replace(f"#{a}", arg_obj[a])
                 run_command(create_command(c), conf["work_dir"])
 
     except Exception as e:
-        raise UniqueResponse(f"ERROR : {e}")
+        raise NotAcceptableError(f"ERROR : {e}")
 
-    return UniqueResponse(response_data.ACCEPTED)
+    return UniqueResponse(response_data.UPDATED)
