@@ -1,4 +1,6 @@
 
+import json
+import re
 from common.exceptions import NotAcceptableError
 from config import env_config
 from fastapi import APIRouter, Request, status
@@ -16,7 +18,7 @@ router = APIRouter(prefix="/publish")
 
 
 @router.post("/from_script", status_code=status.HTTP_202_ACCEPTED)
-@limiter.limit('1/minutes')
+# @limiter.limit('1/minutes')
 async def publish_from_scrypt(
         request: Request,
         data: PublishPostIn
@@ -47,8 +49,14 @@ async def publish_from_scrypt(
                 if 'args' in conf:
                     for a in conf['args']:
                         c = c.replace(f"#{a}", arg_obj[a])
-                response.append(run_command(
-                    create_command(c), conf["work_dir"]))
+                        
+                res = run_command(
+                    create_command(c), conf["work_dir"])
+                res = res.replace("\n" , " ")
+                res = res.replace("\\n" , " ")
+                res = res.replace("\\" , "")
+                res = re.sub(r'\s+', ' ', res).strip()
+                response.append(res)
 
         if 'update' in conf and len(conf['update']):
 
@@ -56,10 +64,16 @@ async def publish_from_scrypt(
                 if 'args' in conf:
                     for a in conf['args']:
                         c = c.replace(f"#{a}", arg_obj[a])
-                response.append(run_command(
-                    create_command(c), conf["work_dir"]))
+                res = run_command(
+                    create_command(c), conf["work_dir"])
+                res = res.replace("\n" , " ")
+                res = res.replace("\\n" , " ")
+                res = res.replace("\\" , "")
+                res = re.sub(r'\s+', ' ', res).strip()
+                response.append(res)
 
     except Exception as e:
         raise NotAcceptableError(f"ERROR : {e}")
 
-    return UniqueResponse(response_data.UPDATED, response)
+#    return UniqueResponse(response_data.UPDATED, response)
+    return response 
