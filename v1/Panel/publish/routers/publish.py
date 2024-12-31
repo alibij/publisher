@@ -29,6 +29,7 @@ async def publish_from_scrypt(
 
     conf = conf[data.project_name]
     arg_obj = {}
+    response = []
     if 'args' in conf:
         try:
             arg_obj = {key.lower(): value for key, value in (
@@ -46,7 +47,8 @@ async def publish_from_scrypt(
                 if 'args' in conf:
                     for a in conf['args']:
                         c = c.replace(f"#{a}", arg_obj[a])
-                run_command(create_command(c), conf["work_dir"])
+                response.append(run_command(
+                    create_command(c), conf["work_dir"]))
 
         if 'update' in conf and len(conf['update']):
 
@@ -54,9 +56,10 @@ async def publish_from_scrypt(
                 if 'args' in conf:
                     for a in conf['args']:
                         c = c.replace(f"#{a}", arg_obj[a])
-                run_command(create_command(c), conf["work_dir"])
+                response.append(run_command(
+                    create_command(c), conf["work_dir"]))
 
     except Exception as e:
         raise NotAcceptableError(f"ERROR : {e}")
 
-    return UniqueResponse(response_data.UPDATED)
+    return UniqueResponse(response_data.UPDATED, response)
